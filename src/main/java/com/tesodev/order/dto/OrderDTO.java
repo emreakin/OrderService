@@ -3,12 +3,12 @@ package com.tesodev.order.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
-import com.tesodev.order.entity.Product;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 public class OrderDTO implements Serializable {
 
@@ -18,7 +18,7 @@ public class OrderDTO implements Serializable {
     private UUID customerId;
     private int quantity;
     private double price;
-    private double status;
+    private String status;
     private AddressDTO address;
-    private Product product;
+    private ProductDTO product;
 }

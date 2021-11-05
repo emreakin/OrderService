@@ -14,10 +14,12 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "order")
@@ -45,7 +47,7 @@ public class Order extends AbstractAuditingEntity implements Serializable {
     private double price;
 	
 	@Column(name = "status")
-    private double status;
+    private String status;
 	
 	@OneToOne
     @JoinColumn(name = "address_id")
