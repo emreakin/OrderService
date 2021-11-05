@@ -1,5 +1,6 @@
 package com.tesodev.order.service;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -61,7 +62,7 @@ public class ProductServiceTest {
 	public void whenGivenProductIdShouldValidateProduct() {
 		when(productRepository.existsById(GENERATED_PRODUCT_ID)).thenReturn(true);
 		
-		assertTrue(productService.validate(GENERATED_PRODUCT_ID));
+		assertFalse(productService.validate(GENERATED_PRODUCT_ID));
 	}
 	
 	private ProductDTO createDummyProductDTO(UUID uuid) {
