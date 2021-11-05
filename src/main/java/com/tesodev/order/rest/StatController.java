@@ -10,6 +10,6 @@ public class StatController {
 
 	@GetMapping("/stat")
     public String stat() {
-        return "OK4";
+        return "OK5";
     }
 }
