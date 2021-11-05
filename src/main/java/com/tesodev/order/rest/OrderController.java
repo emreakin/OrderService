@@ -77,4 +77,15 @@ public class OrderController {
 		
         return response;
     }
+	
+	@PutMapping("/changeStatus/{id}/{status}")
+	public BaseResponseModel<StatusResultModel> getOrder(@PathVariable(value = "id", required = true) UUID orderId, 
+			@PathVariable(value = "status", required = true) String status) {
+		BaseResponseModel<StatusResultModel> response = new BaseResponseModel<>();
+		
+		boolean resultStatus = orderService.changeStatus(orderId, status);
+		response.setResult(new StatusResultModel(resultStatus));
+		
+		return response;
+    }
 }
