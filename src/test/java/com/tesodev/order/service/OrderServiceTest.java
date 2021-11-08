@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -24,6 +25,7 @@ import com.tesodev.order.dto.ProductDTO;
 import com.tesodev.order.entity.Address;
 import com.tesodev.order.entity.Order;
 import com.tesodev.order.entity.Product;
+import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.mapper.OrderMapper;
 import com.tesodev.order.repository.OrderRepository;
 import com.tesodev.order.service.impl.AddressService;
@@ -61,7 +63,12 @@ public class OrderServiceTest {
 		when(orderRepository.save(ArgumentMatchers.any(Order.class))).thenReturn(order);
 		
 		OrderDTO orderDTO = createDummyOrderDTO(null);
-		UUID orderId = orderService.create(orderDTO);
+		UUID orderId = null;
+		try {
+			orderId = orderService.create(orderDTO);
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
 		
 		assertNotNull(orderId);
     }
@@ -76,7 +83,14 @@ public class OrderServiceTest {
         when(orderRepository.existsById(order.getId())).thenReturn(true);
         when(orderMapper.toEntity(ArgumentMatchers.any(OrderDTO.class))).thenReturn(order);
 
-        assertTrue(orderService.update(newOrder));
+        boolean status = false;
+		try {
+			status = orderService.update(newOrder);
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
+        
+        assertTrue(status);
     }
 	
 	@Test
@@ -84,13 +98,19 @@ public class OrderServiceTest {
 		Order order = createDummyOrder(GENERATED_ORDER_ID);
 		order.getAddress().setId(GENERATED_ADDRESS_ID);
 		order.getProduct().setId(GENERATED_PRODUCT_ID);
+
+		boolean status = false;
+		try {
+			when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
+			when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(true);
+			when(productService.delete(GENERATED_PRODUCT_ID)).thenReturn(true);
+			
+			status = orderService.delete(GENERATED_ORDER_ID);
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
 		
-		when(orderRepository.existsById(GENERATED_ORDER_ID)).thenReturn(true);
-		when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
-		when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(true);
-		when(productService.delete(GENERATED_PRODUCT_ID)).thenReturn(true);
-		
-		assertTrue(orderService.delete(GENERATED_ORDER_ID));
+		assertTrue(status);
 	}
 	
 	@Test
@@ -98,11 +118,18 @@ public class OrderServiceTest {
 		Order order = createDummyOrder(GENERATED_ORDER_ID);
 		order.getAddress().setId(GENERATED_ADDRESS_ID);
 		
-		when(orderRepository.existsById(GENERATED_ORDER_ID)).thenReturn(true);
-		when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
-		when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(false);
+		boolean status = true;
+		try {
+			when(orderRepository.existsById(GENERATED_ORDER_ID)).thenReturn(true);
+			when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
+			when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(false);
+			
+			status = orderService.delete(GENERATED_ORDER_ID);
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
 		
-		assertFalse(orderService.delete(GENERATED_ORDER_ID));
+		assertFalse(status);
 	}
 	
 	@Test
@@ -111,12 +138,19 @@ public class OrderServiceTest {
 		order.getAddress().setId(GENERATED_ADDRESS_ID);
 		order.getProduct().setId(GENERATED_PRODUCT_ID);
 		
-		when(orderRepository.existsById(GENERATED_ORDER_ID)).thenReturn(true);
-		when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
-		when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(true);
-		when(productService.delete(GENERATED_PRODUCT_ID)).thenReturn(false);
+		boolean status = true;
+		try {
+			when(orderRepository.existsById(GENERATED_ORDER_ID)).thenReturn(true);
+			when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
+			when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(true);
+			when(productService.delete(GENERATED_PRODUCT_ID)).thenReturn(false);
+			
+			status = orderService.delete(GENERATED_ORDER_ID);
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
 		
-		assertFalse(orderService.delete(GENERATED_ORDER_ID));
+		assertFalse(status);
 	}
 	
 	@Test
@@ -151,7 +185,14 @@ public class OrderServiceTest {
   
         when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
 
-        assertTrue(orderService.changeStatus(GENERATED_ORDER_ID, "REFUND"));
+        boolean status = false;
+        try {
+			status = orderService.changeStatus(GENERATED_ORDER_ID, "REFUND");
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
+        
+        assertTrue(status);
     }
 	
 	private OrderDTO createDummyOrderDTO(UUID uuid) {

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.tesodev.order.dto.OrderDTO;
 import com.tesodev.order.entity.Order;
+import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.dto.AddressDTO;
 import com.tesodev.order.dto.ProductDTO;
 import com.tesodev.order.mapper.OrderMapper;
@@ -35,8 +36,11 @@ public class OrderService implements IOrderService {
 	private final IProductService productService;
 
 	@Override
-	public UUID create(OrderDTO orderDTO) {
+	public UUID create(OrderDTO orderDTO) throws ServiceException {
 		log.debug("Request to save Order : {}", orderDTO);
+		
+		if(orderDTO.getId() != null)
+			throw new ServiceException("Order Id should be empty");
 		
 		AddressDTO address = orderDTO.getAddress();
 		if(address.getId() == null || !addressService.validate(address.getId())) {
@@ -58,11 +62,14 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public boolean update(OrderDTO orderDTO) {
+	public boolean update(OrderDTO orderDTO) throws ServiceException {
 		log.debug("Request to update Order : {}", orderDTO);
 		
+		if(orderDTO.getId() == null)
+			throw new ServiceException("Order Id shouldn't be empty");
+		
 		if(!orderRepository.existsById(orderDTO.getId()))
-			return false;
+			throw new ServiceException("Order doesn't exist");
 		
 		orderRepository.save(orderMapper.toEntity(orderDTO));
 		
@@ -70,21 +77,24 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public boolean delete(UUID orderId) {
+	public boolean delete(UUID orderId) throws ServiceException {
 		log.debug("Request to delete Order Id : {}", orderId);
-		
-		if(!orderRepository.existsById(orderId))
-			return false;
 		
 		Optional<Order> order = orderRepository.findById(orderId);
 		if(!order.isPresent())
-			return false;
+			throw new ServiceException("Order doesn't exist");
 		
-		if(!addressService.delete(order.get().getAddress().getId()))
-			return false;
+		try {
+			addressService.delete(order.get().getAddress().getId());
+		} catch (ServiceException e) {
+			throw new ServiceException("Address didn't delete beacuse of : " + e.getErrorMessage());
+		}
 		
-		if(!productService.delete(order.get().getProduct().getId()))
-			return false;
+		try {
+			productService.delete(order.get().getProduct().getId());
+		} catch (ServiceException e) {
+			throw new ServiceException("Product didn't delete beacuse of : " + e.getErrorMessage());
+		}
 		
 		order.get().setClosed(true);
 		orderRepository.save(order.get());
@@ -110,12 +120,12 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public boolean changeStatus(UUID orderId, String status) {
+	public boolean changeStatus(UUID orderId, String status) throws ServiceException {
 		log.debug("Request to changeStatus Order Id : {}", orderId);
 		Optional<Order> order = orderRepository.findById(orderId);
 		
 		if(!order.isPresent())
-			return false;
+			throw new ServiceException("Order doesn't exist");
 		
 		order.get().setStatus(status);
 		orderRepository.save(order.get());

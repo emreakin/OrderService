@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tesodev.order.dto.OrderDTO;
+import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.model.BaseResponseModel;
 import com.tesodev.order.model.OrdersResultModel;
 import com.tesodev.order.model.IdResultModel;
@@ -32,8 +33,12 @@ public class OrderController {
 	public BaseResponseModel<IdResultModel> createOrder(@RequestBody OrderDTO order) {
 		BaseResponseModel<IdResultModel> response = new BaseResponseModel<>();
 		
-		UUID orderId = orderService.create(order);
-		response.setResult(new IdResultModel(orderId));
+		try {
+			UUID orderId = orderService.create(order);
+			response.setResult(new IdResultModel(orderId));
+		} catch (ServiceException e) {
+			response.setError(e.getErrorMessage());
+		}
 		
 		return response;
 	}
@@ -42,8 +47,12 @@ public class OrderController {
 	public BaseResponseModel<StatusResultModel> updateOrder(@RequestBody OrderDTO order) {
 		BaseResponseModel<StatusResultModel> response = new BaseResponseModel<>();
 		
-		boolean resultStatus = orderService.update(order);
-		response.setResult(new StatusResultModel(resultStatus));
+		try {
+			boolean resultStatus = orderService.update(order);
+			response.setResult(new StatusResultModel(resultStatus));
+		} catch (ServiceException e) {
+			response.setError(e.getErrorMessage());
+		}
 		
 		return response;
 	}
@@ -52,8 +61,12 @@ public class OrderController {
 	public BaseResponseModel<StatusResultModel> deleteOrder(@PathVariable(value = "id", required = true) UUID orderId) {
 		BaseResponseModel<StatusResultModel> response = new BaseResponseModel<>();
 		
-		boolean resultStatus = orderService.delete(orderId);
-		response.setResult(new StatusResultModel(resultStatus));
+		try {
+			boolean resultStatus = orderService.delete(orderId);
+			response.setResult(new StatusResultModel(resultStatus));
+		} catch (ServiceException e) {
+			response.setError(e.getErrorMessage());
+		}
 		
 		return response;
 	}
@@ -83,8 +96,12 @@ public class OrderController {
 			@PathVariable(value = "status", required = true) String status) {
 		BaseResponseModel<StatusResultModel> response = new BaseResponseModel<>();
 		
-		boolean resultStatus = orderService.changeStatus(orderId, status);
-		response.setResult(new StatusResultModel(resultStatus));
+		try {
+			boolean resultStatus = orderService.changeStatus(orderId, status);
+			response.setResult(new StatusResultModel(resultStatus));
+		} catch (ServiceException e) {
+			response.setError(e.getErrorMessage());
+		}
 		
 		return response;
     }

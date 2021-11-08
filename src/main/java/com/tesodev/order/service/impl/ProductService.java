@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.tesodev.order.dto.ProductDTO;
 import com.tesodev.order.entity.Product;
+import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.mapper.ProductMapper;
 import com.tesodev.order.repository.ProductRepository;
 import com.tesodev.order.service.IProductService;
@@ -25,23 +26,24 @@ public class ProductService implements IProductService {
 	private final ProductMapper productMapper;
 	
 	@Override
-	public UUID create(ProductDTO productDTO) {
+	public UUID create(ProductDTO productDTO) throws ServiceException {
 		log.debug("Request to save Product : {}", productDTO);
+		
+		if(productDTO.getId() != null)
+			throw new ServiceException("Product Id should be empty");
+		
 		Product product = productMapper.toEntity(productDTO);
 		product = productRepository.save(product);
 		return product.getId();
 	}
 	
 	@Override
-	public boolean delete(UUID productId) {
+	public boolean delete(UUID productId) throws ServiceException {
 		log.debug("Request to delete Product Id : {}", productId);
-		
-		if(!productRepository.existsById(productId))
-			return false;
 		
 		Optional<Product> product = productRepository.findById(productId);
 		if(!product.isPresent())
-			return false;
+			throw new ServiceException("Product doesn't exist");
 		
 		product.get().setClosed(true);
 		productRepository.save(product.get());

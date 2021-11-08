@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -16,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.tesodev.order.dto.ProductDTO;
 import com.tesodev.order.entity.Product;
+import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.mapper.ProductMapper;
 import com.tesodev.order.repository.ProductRepository;
 import com.tesodev.order.service.impl.ProductService;
@@ -42,7 +44,12 @@ public class ProductServiceTest {
 		when(productRepository.save(ArgumentMatchers.any(Product.class))).thenReturn(product);
 		
 		ProductDTO productDTO = createDummyProductDTO(null);
-		UUID productId = productService.create(productDTO);
+		UUID productId = null;
+		try {
+			productId = productService.create(productDTO);
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
 		
 		assertNotNull(productId);
     }
@@ -51,10 +58,16 @@ public class ProductServiceTest {
 	public void whenShouldDeleteProductByGivenProductIdIfFound() {
 		Product product = createDummyProduct(GENERATED_PRODUCT_ID);
 		
-		when(productRepository.existsById(GENERATED_PRODUCT_ID)).thenReturn(true);
 		when(productRepository.findById(GENERATED_PRODUCT_ID)).thenReturn(Optional.of(product));
 		
-		assertTrue(productService.delete(GENERATED_PRODUCT_ID));
+		boolean deleteStatus = false;
+		try {
+			deleteStatus = productService.delete(GENERATED_PRODUCT_ID);
+		} catch (ServiceException e) {
+			Assert.fail("Exception " + e);
+		}
+		
+		assertTrue(deleteStatus);
 	}
 	
 	@Test
