@@ -30,7 +30,7 @@ public class ProductService implements IProductService {
 		log.debug("Request to save Product : {}", productDTO);
 		
 		if(productDTO.getId() != null)
-			throw new ServiceException("Product Id should be empty");
+			throw new ServiceException("E01", "Product Id should be empty");
 		
 		Product product = productMapper.toEntity(productDTO);
 		product = productRepository.save(product);
@@ -43,7 +43,7 @@ public class ProductService implements IProductService {
 		
 		Optional<Product> product = productRepository.findById(productId);
 		if(!product.isPresent())
-			throw new ServiceException("Product doesn't exist");
+			throw new ServiceException("E03", "Product doesn't exist");
 		
 		product.get().setClosed(true);
 		productRepository.save(product.get());

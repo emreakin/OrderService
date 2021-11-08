@@ -1,6 +1,5 @@
 package com.tesodev.order.service;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,6 +73,18 @@ public class OrderServiceTest {
     }
 	
 	@Test
+    public void whenCreateOrderShouldThrownExceptionIfOrderIdNotEmpty() {		
+		
+		OrderDTO orderDTO = createDummyOrderDTO(GENERATED_ORDER_ID);
+		try {
+			orderService.create(orderDTO);
+		} catch (ServiceException e) {
+			assertEquals(e.getErrorCode(), "E01");
+		}
+
+    }
+	
+	@Test
     public void whenGivenOrderShouldUpdateOrderIfFound() {
 		Order order = createDummyOrder(GENERATED_ORDER_ID);
         
@@ -91,6 +102,18 @@ public class OrderServiceTest {
 		}
         
         assertTrue(status);
+    }
+	
+	@Test
+    public void whenUpdateOrderShouldThrownExceptionIfOrderIdEmpty() {		
+		
+		OrderDTO orderDTO = createDummyOrderDTO(null);
+		try {
+			orderService.update(orderDTO);
+		} catch (ServiceException e) {
+			assertEquals(e.getErrorCode(), "E02");
+		}
+
     }
 	
 	@Test
@@ -114,43 +137,38 @@ public class OrderServiceTest {
 	}
 	
 	@Test
-	public void shouldReturnFalseWhenAdressNotDeleted() {
+	public void shouldThrowExceptionWhenAdressNotDeleted() {
 		Order order = createDummyOrder(GENERATED_ORDER_ID);
 		order.getAddress().setId(GENERATED_ADDRESS_ID);
 		
-		boolean status = true;
 		try {
-			when(orderRepository.existsById(GENERATED_ORDER_ID)).thenReturn(true);
 			when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
-			when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(false);
+			when(addressService.delete(GENERATED_ADDRESS_ID)).thenThrow(new ServiceException("E03", "Address doesn't exist"));
 			
-			status = orderService.delete(GENERATED_ORDER_ID);
+			orderService.delete(GENERATED_ORDER_ID);
 		} catch (ServiceException e) {
-			Assert.fail("Exception " + e);
+			assertEquals(e.getErrorCode(), "E00");
 		}
-		
-		assertFalse(status);
+
 	}
 	
 	@Test
-	public void shouldReturnFalseWhenProductNotDeleted() {
+	public void shouldThrowExceptionWhenProductNotDeleted() {
 		Order order = createDummyOrder(GENERATED_ORDER_ID);
 		order.getAddress().setId(GENERATED_ADDRESS_ID);
 		order.getProduct().setId(GENERATED_PRODUCT_ID);
 		
-		boolean status = true;
 		try {
 			when(orderRepository.existsById(GENERATED_ORDER_ID)).thenReturn(true);
 			when(orderRepository.findById(GENERATED_ORDER_ID)).thenReturn(Optional.of(order));
 			when(addressService.delete(GENERATED_ADDRESS_ID)).thenReturn(true);
-			when(productService.delete(GENERATED_PRODUCT_ID)).thenReturn(false);
+			when(productService.delete(GENERATED_PRODUCT_ID)).thenThrow(new ServiceException("E03", "Product doesn't exist"));
 			
-			status = orderService.delete(GENERATED_ORDER_ID);
+			orderService.delete(GENERATED_ORDER_ID);
 		} catch (ServiceException e) {
-			Assert.fail("Exception " + e);
+			assertEquals(e.getErrorCode(), "E00");
 		}
-		
-		assertFalse(status);
+
 	}
 	
 	@Test

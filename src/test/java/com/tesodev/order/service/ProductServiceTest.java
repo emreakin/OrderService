@@ -2,6 +2,7 @@ package com.tesodev.order.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -37,7 +38,7 @@ public class ProductServiceTest {
 	private final UUID GENERATED_PRODUCT_ID = UUID.fromString("3c1b17db-d4bd-46e9-b582-86bfdbdc0723");
 	
 	@Test
-    public void whenCreateAdressShouldReturnProductId() {		
+    public void whenCreateProductShouldReturnProductId() {		
 		Product product = createDummyProduct(GENERATED_PRODUCT_ID);
 		
 		when(productMapper.toEntity(ArgumentMatchers.any(ProductDTO.class))).thenReturn(product);		
@@ -52,6 +53,17 @@ public class ProductServiceTest {
 		}
 		
 		assertNotNull(productId);
+    }
+	
+	@Test
+    public void whenCreateProductShouldThrownExceptionIfProductIdNotEmpty() {		
+		
+		ProductDTO productDTO = createDummyProductDTO(GENERATED_PRODUCT_ID);
+		try {
+			productService.create(productDTO);
+		} catch (ServiceException e) {
+			assertEquals(e.getErrorCode(), "E01");
+		}
     }
 	
 	@Test
