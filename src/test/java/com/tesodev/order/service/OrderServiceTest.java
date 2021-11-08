@@ -24,6 +24,7 @@ import com.tesodev.order.dto.ProductDTO;
 import com.tesodev.order.entity.Address;
 import com.tesodev.order.entity.Order;
 import com.tesodev.order.entity.Product;
+import com.tesodev.order.exception.ErrorCodes;
 import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.mapper.OrderMapper;
 import com.tesodev.order.repository.OrderRepository;
@@ -79,7 +80,7 @@ public class OrderServiceTest {
 		try {
 			orderService.create(orderDTO);
 		} catch (ServiceException e) {
-			assertEquals(e.getErrorCode(), "E01");
+			assertEquals(e.getErrorCode(), ErrorCodes.ID_SHOULD_EMPTY);
 		}
 
     }
@@ -111,7 +112,7 @@ public class OrderServiceTest {
 		try {
 			orderService.update(orderDTO);
 		} catch (ServiceException e) {
-			assertEquals(e.getErrorCode(), "E02");
+			assertEquals(e.getErrorCode(), ErrorCodes.ID_SHOULD_NOT_EMPTY);
 		}
 
     }
@@ -147,7 +148,7 @@ public class OrderServiceTest {
 			
 			orderService.delete(GENERATED_ORDER_ID);
 		} catch (ServiceException e) {
-			assertEquals(e.getErrorCode(), "E00");
+			assertEquals(e.getErrorCode(), ErrorCodes.GENERIC_ERROR);
 		}
 
 	}
@@ -166,7 +167,7 @@ public class OrderServiceTest {
 			
 			orderService.delete(GENERATED_ORDER_ID);
 		} catch (ServiceException e) {
-			assertEquals(e.getErrorCode(), "E00");
+			assertEquals(e.getErrorCode(), ErrorCodes.GENERIC_ERROR);
 		}
 
 	}

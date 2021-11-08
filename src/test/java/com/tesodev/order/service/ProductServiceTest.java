@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.tesodev.order.dto.ProductDTO;
 import com.tesodev.order.entity.Product;
+import com.tesodev.order.exception.ErrorCodes;
 import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.mapper.ProductMapper;
 import com.tesodev.order.repository.ProductRepository;
@@ -62,7 +63,7 @@ public class ProductServiceTest {
 		try {
 			productService.create(productDTO);
 		} catch (ServiceException e) {
-			assertEquals(e.getErrorCode(), "E01");
+			assertEquals(e.getErrorCode(), ErrorCodes.ID_SHOULD_EMPTY);
 		}
     }
 	

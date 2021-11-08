@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.tesodev.order.dto.OrderDTO;
 import com.tesodev.order.entity.Order;
+import com.tesodev.order.exception.ErrorCodes;
 import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.dto.AddressDTO;
 import com.tesodev.order.dto.ProductDTO;
@@ -40,7 +41,7 @@ public class OrderService implements IOrderService {
 		log.debug("Request to save Order : {}", orderDTO);
 		
 		if(orderDTO.getId() != null)
-			throw new ServiceException("E01", "Order Id should be empty");
+			throw new ServiceException(ErrorCodes.ID_SHOULD_EMPTY, "Order Id should be empty");
 		
 		AddressDTO address = orderDTO.getAddress();
 		if(address.getId() == null || !addressService.validate(address.getId())) {
@@ -66,10 +67,10 @@ public class OrderService implements IOrderService {
 		log.debug("Request to update Order : {}", orderDTO);
 		
 		if(orderDTO.getId() == null)
-			throw new ServiceException("E02", "Order Id shouldn't be empty");
+			throw new ServiceException(ErrorCodes.ID_SHOULD_NOT_EMPTY, "Order Id shouldn't be empty");
 		
 		if(!orderRepository.existsById(orderDTO.getId()))
-			throw new ServiceException("E03", "Order doesn't exist");
+			throw new ServiceException(ErrorCodes.RECORD_DOES_NOT_EXIST, "Order doesn't exist");
 		
 		orderRepository.save(orderMapper.toEntity(orderDTO));
 		
@@ -82,18 +83,18 @@ public class OrderService implements IOrderService {
 		
 		Optional<Order> order = orderRepository.findById(orderId);
 		if(!order.isPresent())
-			throw new ServiceException("E03", "Order doesn't exist");
+			throw new ServiceException(ErrorCodes.RECORD_DOES_NOT_EXIST, "Order doesn't exist");
 		
 		try {
 			addressService.delete(order.get().getAddress().getId());
 		} catch (ServiceException e) {
-			throw new ServiceException("E00", "Address didn't delete beacuse of : " + e.getErrorMessage());
+			throw new ServiceException(ErrorCodes.GENERIC_ERROR, "Address didn't delete beacuse of : " + e.getErrorMessage());
 		}
 		
 		try {
 			productService.delete(order.get().getProduct().getId());
 		} catch (ServiceException e) {
-			throw new ServiceException("E00", "Product didn't delete beacuse of : " + e.getErrorMessage());
+			throw new ServiceException(ErrorCodes.GENERIC_ERROR, "Product didn't delete beacuse of : " + e.getErrorMessage());
 		}
 		
 		order.get().setClosed(true);
@@ -125,7 +126,7 @@ public class OrderService implements IOrderService {
 		Optional<Order> order = orderRepository.findById(orderId);
 		
 		if(!order.isPresent())
-			throw new ServiceException("E03", "Order doesn't exist");
+			throw new ServiceException(ErrorCodes.RECORD_DOES_NOT_EXIST, "Order doesn't exist");
 		
 		order.get().setStatus(status);
 		orderRepository.save(order.get());

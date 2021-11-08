@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.tesodev.order.dto.AddressDTO;
 import com.tesodev.order.entity.Address;
+import com.tesodev.order.exception.ErrorCodes;
 import com.tesodev.order.exception.ServiceException;
 import com.tesodev.order.mapper.AddressMapper;
 import com.tesodev.order.repository.AddressRepository;
@@ -62,7 +63,7 @@ public class AddressServiceTest {
 		try {
 			addressService.create(addressDTO);
 		} catch (ServiceException e) {
-			assertEquals(e.getErrorCode(), "E01");
+			assertEquals(e.getErrorCode(), ErrorCodes.ID_SHOULD_EMPTY);
 		}
     }
 	
