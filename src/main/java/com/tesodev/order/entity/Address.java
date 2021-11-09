@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Entity
-@Table(name = "address")
+@Table(name = "t_address")
 @Where(clause = "closed=false")
 public class Address implements Serializable {
 
