@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Entity
-@Table(name = "product")
+@Table(name = "t_product")
 @Where(clause = "closed=false")
 public class Product implements Serializable {
 
