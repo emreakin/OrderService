@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
-@Table(name = "order")
+@Table(name = "t_order")
 @Where(clause = "closed=false")
 public class Order extends AbstractAuditingEntity implements Serializable {
 
