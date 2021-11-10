@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "4f0e5a2d-79f8-4672-9fc0-94b5023149bc",
+		"name": "Order Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/order/list",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customerId\": \"c9580aa1-b440-47c2-92e0-ba42c20d142b\",\r\n    \"quantity\": 3,\r\n    \"price\": 110.5,\r\n    \"status\": \"CONFIRMED\",\r\n    \"address\": {\r\n        \"id\": \"19b7cfbd-f015-4527-8775-684fbd43d8df\",\r\n        \"addressLine\": \"Test Address\",\r\n        \"city\": \"Antalya\",\r\n        \"country\": \"Türkiye\",\r\n        \"cityCode\": 7\r\n    },\r\n    \"product\": {\r\n        \"id\": \"8088c2d6-78db-4794-a7f4-2ccc677cd278\",\r\n        \"imageUrl\": \"http://product.images.com/ghsagd8deevdv\",\r\n        \"name\": \"First Image\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/order/create",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"5f298f20-a3e2-4a9d-b978-bc617639f085\",\r\n    \"customerId\": \"c9580aa1-b440-47c2-92e0-ba42c20d142b\",\r\n    \"quantity\": 2,\r\n    \"price\": 110.5,\r\n    \"status\": \"CONFIRMED\",\r\n    \"address\": {\r\n        \"id\": \"ff45733e-beae-46ed-a988-91dc29400ca2\",\r\n        \"addressLine\": \"Test Address\",\r\n        \"city\": \"Antalya\",\r\n        \"country\": \"Türkiye\",\r\n        \"cityCode\": 7\r\n    },\r\n    \"product\": {\r\n        \"id\": \"6b0df49c-c98d-4503-92c9-54472c3a39b3\",\r\n        \"imageUrl\": \"http://product.images.com/ghsagd8deevdv\",\r\n        \"name\": \"First Image\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/order/update",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/order/delete/5f298f20-a3e2-4a9d-b978-bc617639f085",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"delete",
+						"5f298f20-a3e2-4a9d-b978-bc617639f085"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/order/get/5f298f20-a3e2-4a9d-b978-bc617639f085",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"get",
+						"5f298f20-a3e2-4a9d-b978-bc617639f085"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Status",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/order/changeStatus/5f298f20-a3e2-4a9d-b978-bc617639f085/VOID",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"changeStatus",
+						"5f298f20-a3e2-4a9d-b978-bc617639f085",
+						"VOID"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://tesodev-be-orderservice.herokuapp.com"
+		}
+	]
+}
